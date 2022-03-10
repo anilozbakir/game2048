@@ -26,6 +26,7 @@ import 'rec_touch.dart';
 import "dart:ui" as d;
 import 'dart:developer';
 import "board.dart";
+import "dart:math";
 
 // enum TileSet{
 //   TILE_0,
@@ -45,14 +46,14 @@ class TileLine {
   int col;
   List<TileData>? oldList;
   List<TileData>? newList;
-  List<int>? FreeTiles;
+  List<int>? freeTiles;
   // int pushindex = 0;
   TileLine({
     this.col = 0,
   }) {
     oldList = List.generate(col, (index) => new TileData());
     newList = List.generate(col, (index) => new TileData());
-    FreeTiles = List.generate(0, (index) => 0);
+    freeTiles = List.generate(0, (index) => 0);
   }
   bool add(TileData tiledata) {
     //create a new tiledata with new reference.since it will only hold the new tileindex
@@ -79,8 +80,56 @@ class TileLine {
     return lsOut;
   }
 
-  static bool PlaceNewTiles(List<TileLine> ls) {
-    return true;
+  static int getTotalFree(List<TileLine> ls) {
+    int total = 0;
+    ls.forEach((element) {
+      total += element.freeTiles!.length;
+    });
+    return total;
+  }
+
+  static bool PlaceNewTiles(List<TileLine> ls, {int rndCount = 2}) {
+    bool first = true;
+    int total = getTotalFree(ls);
+    var rnd = Random();
+    bool newTileAvailable = true;
+    for (int i = 0; i < rndCount && total > 0; i++) {
+      if (total == 0) {
+        if (first)
+          return false; //game end!!!
+        else
+          return true;
+      }
+      int rndTileIndex = 3 * rnd.nextInt(100) +
+          rnd.nextInt(100) +
+          rnd.nextInt(100); //create random for placing index
+      rndTileIndex %= total;
+      int tileLineIndex = 0;
+      int totalIndex = rndTileIndex;
+      while (totalIndex > ls[tileLineIndex].freeTiles!.length) {
+        totalIndex -= ls[tileLineIndex].freeTiles!.length;
+        tileLineIndex++;
+        if (tileLineIndex >= ls.length) {
+          newTileAvailable = false;
+          break;
+        }
+      }
+      if (!newTileAvailable) {
+        if (!first)
+          return false;
+        else {
+          return true;
+        }
+      }
+
+      int rndTile = rnd.nextInt(2) + 1; //return 2 or 4
+      int freeIndex = ls[tileLineIndex].freeTiles![totalIndex];
+      ls[tileLineIndex].newList![freeIndex].tileIndex = rndTile;
+      ls[tileLineIndex].freeTiles!.remove(totalIndex);
+      first = false;
+    }
+    if (!first) return true;
+    return false;
   }
 
   void GetLineTileValues(TileLine ls) {
@@ -125,11 +174,11 @@ class TileLine {
         newList?[newIndex].tileIndex = oldList![index].tileIndex;
       }
     }
-    FreeTiles!.clear();
+    freeTiles!.clear();
     for (int i = 0; i < oldList!.length; i++) {
       oldList![i].tileIndex = newList![i].tileIndex;
       if (newList![i].tileIndex == 0) {
-        FreeTiles!.add(i);
+        freeTiles!.add(i);
       }
     }
   }
@@ -168,8 +217,13 @@ class TileLine {
         newList?[newIndex].tileIndex = oldList![index].tileIndex;
       }
     }
-    for (int i = 0; i < oldList!.length; i++)
+    freeTiles!.clear();
+    for (int i = 0; i < oldList!.length; i++) {
       oldList![i].tileIndex = newList![i].tileIndex;
+      if (newList![i].tileIndex == 0) {
+        freeTiles!.add(i);
+      }
+    }
   }
 
   void ApplyChanges() {

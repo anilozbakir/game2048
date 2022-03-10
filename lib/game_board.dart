@@ -16,7 +16,7 @@ import "tile_board.dart";
 import "dart:math";
 
 class GameBoard extends PositionComponent {
-  final List<Tile> MyComponents = [];
+  //final List<Tile> MyComponents = [];
   // // final List<d.Image> MyImages = [];
   // int rowCount = 5;
   // int colCount = 5;
@@ -36,6 +36,8 @@ class GameBoard extends PositionComponent {
   Future<void> onLoad() async {
     await super.onLoad();
     // MyComponents = List.generate(16, (i) {
+
+    //place the background
     Sprite background = await Sprite.load('p_background.png',
         srcPosition: Vector2(0, 0), srcSize: Vector2(128 * 4, 128 * 4));
     SpriteComponent backsprite =
@@ -63,8 +65,14 @@ class GameBoard extends PositionComponent {
       dv.log('row: $row,col:$col, pos: $pos');
       add(bg);
       tileArray![row].add(TileData(tileIndex: bg.tile, tileImage: bg));
-      MyComponents.add(bg);
+      // MyComponents.add(bg);
     }
+    //place new tiles randomly
+    TileLine.getTotalFree(tileArray!);
+    TileLine.PlaceNewTiles(tileArray!);
+    tileArray!.forEach((element) {
+      element.ApplyChanges();
+    });
   }
 
   @override

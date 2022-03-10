@@ -66,8 +66,13 @@ class MyGame extends FlameGame with KeyboardEvents {
         });
         List<TileLine> transpose2 = TileLine.GetTransposeMatrix(transpose);
         int index = 0;
+        if (!TileLine.PlaceNewTiles(transpose2)) {
+          dv.log("game end");
+          return KeyEventResult.handled;
+        }
         game.tileArray!.forEach((element) {
           dv.log('$index');
+
           element.GetLineTileValues(transpose2[index++]);
           element.ApplyChanges();
         });
