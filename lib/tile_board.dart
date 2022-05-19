@@ -228,6 +228,11 @@ class TileLine {
 
   void ApplyChanges() {
     oldList!.forEach((element) {
+      // if (element.tileImage == null) {
+      //   print("tileImage ${element.tileIndex} is null");
+      // } else if (element.tileImage!.sprite == null) {
+      //   print("sprite ${element.tileIndex} is null");
+      // }
       element.tileImage!.changeSizeAndPosition(
           element.tileIndex, element.tileImage!.sprite!.srcSize);
     });

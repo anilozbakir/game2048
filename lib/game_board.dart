@@ -35,9 +35,11 @@ class GameBoard extends PositionComponent {
   @override
   Future<void> onLoad() async {
     await super.onLoad();
+    await Tile.loadImage();
     // MyComponents = List.generate(16, (i) {
-
+    super.onLoad();
     //place the background
+    dv.log("loading background");
     Sprite background = await Sprite.load('p_background.png',
         srcPosition: Vector2(0, 0), srcSize: Vector2(128 * 4, 128 * 4));
     SpriteComponent backsprite =
@@ -55,11 +57,11 @@ class GameBoard extends PositionComponent {
       int col = (i % 4);
       var pos = Vector2(col.toInt() * 128, row.toInt() * 128);
 
-      bg = Tile(0, pos);
+      bg = Tile(1, pos);
 
       bg.position = Vector2(0, 0) + size / 8 + pos;
       pos = bg.position;
-      super.onLoad();
+
       // int col = i % 4;
       // int row = (i ~/ 4).toInt();
       dv.log('row: $row,col:$col, pos: $pos');
@@ -69,7 +71,7 @@ class GameBoard extends PositionComponent {
     }
     //place new tiles randomly
     TileLine.getTotalFree(tileArray!);
-    TileLine.PlaceNewTiles(tileArray!);
+    // TileLine.PlaceNewTiles(tileArray!);
     tileArray!.forEach((element) {
       element.ApplyChanges();
     });

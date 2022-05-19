@@ -4,28 +4,30 @@ import "package:flame/components.dart";
 import 'dart:developer';
 import 'dart:ui' as d;
 import "package:flutter/material.dart";
-// import "package:flame/game.dart";
-// // import 'package:flame/input.dart';
-// import 'package:flutter/foundation.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter/services.dart';
-//class BoardGame extends SpriteComponent {}
+import "dart:developer" as dv;
 
 class Tile extends SpriteComponent {
-  // creates a component that renders the crate.png sprite, with size 16 x 16
-  Tile(this.tile, this.pos) : super(size: Vector2.all(120));
+  // creates a component that renders the crate.png sprite, with size 16 x 16  }
+  static Sprite? spriteImage;
+  static loadImage() async {
+    spriteImage = await Sprite.load('p_2048_map_2.png');
+  }
+
   Vector2 pos;
   int tile;
-  @override
-  Future<void> onLoad() async {
-    super.onLoad();
+  Tile(this.tile, this.pos) : super(size: Vector2.all(120)) {
     int col = tile % 4;
     int row = (tile ~/ 4).toInt();
     // log('row: $row,col:$col');
-    sprite = await Sprite.load('p_2048_map.png',
+    sprite = Sprite(spriteImage!.image,
         srcPosition: Vector2(col * 120, row * 120), srcSize: Vector2(120, 120));
-
+    dv.log("loading image ${pos}");
     anchor = Anchor.center;
+  }
+
+  @override
+  Future<void> onLoad() async {
+    super.onLoad();
   }
 
   void loadFromTileList(List<d.Image> listImage) async {
