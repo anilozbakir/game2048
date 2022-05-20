@@ -76,6 +76,7 @@ class MyGame extends FlameGame with KeyboardEvents {
           element.GetLineTileValues(transpose2[index++]);
           element.ApplyChanges();
         });
+        putNewTiles();
       } else if (keysPressed.contains(LogicalKeyboardKey.arrowUp)) {
         dv.log("up key");
         dir = Vector2(0, -1);
@@ -92,6 +93,7 @@ class MyGame extends FlameGame with KeyboardEvents {
 
           element.ApplyChanges();
         });
+        putNewTiles();
       } else if (keysPressed.contains(LogicalKeyboardKey.arrowLeft)) {
         dv.log("up left");
         dir = Vector2(-1, 0);
@@ -99,6 +101,7 @@ class MyGame extends FlameGame with KeyboardEvents {
           element.ShiftLeft();
           element.ApplyChanges();
         });
+        putNewTiles();
       } else if (keysPressed.contains(LogicalKeyboardKey.arrowRight)) {
         dv.log("up right");
         dir = Vector2(1, 0);
@@ -107,12 +110,20 @@ class MyGame extends FlameGame with KeyboardEvents {
           element.ShiftRight();
           element.ApplyChanges();
         });
+        putNewTiles();
       }
       //   game.MyComponents[0].position += Matrix2(5, 0, 0, 5) * dir;
       //   game.MyComponents[0].loadFromTileList(game.MyImages);
       //  game.MyComponents[0].changeSizeAndPosition3(dir.x.toInt());
     }
     return KeyEventResult.ignored;
+  }
+
+  putNewTiles() {
+    TileLine.PlaceNewTiles2(game.tileArray!);
+    game.tileArray!.forEach((element) {
+      element.ApplyChanges();
+    });
   }
 
 //   @override

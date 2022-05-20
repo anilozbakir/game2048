@@ -57,7 +57,7 @@ class GameBoard extends PositionComponent {
       int col = (i % 4);
       var pos = Vector2(col.toInt() * 128, row.toInt() * 128);
 
-      bg = Tile(1, pos);
+      bg = Tile(0, pos);
 
       bg.position = Vector2(0, 0) + size / 8 + pos;
       pos = bg.position;
@@ -71,7 +71,7 @@ class GameBoard extends PositionComponent {
     }
     //place new tiles randomly
     TileLine.getTotalFree(tileArray!);
-    // TileLine.PlaceNewTiles(tileArray!);
+    TileLine.PlaceNewTiles2(tileArray!);
     tileArray!.forEach((element) {
       element.ApplyChanges();
     });

@@ -80,12 +80,56 @@ class TileLine {
     return lsOut;
   }
 
+  refreshFreeTiles() {
+    freeTiles!.clear();
+    oldList!.forEach((element) {
+      if (element.tileIndex == 0) {
+        freeTiles!.add(element.tileIndex);
+      }
+    });
+  }
+
   static int getTotalFree(List<TileLine> ls) {
     int total = 0;
     ls.forEach((element) {
+      element.refreshFreeTiles();
       total += element.freeTiles!.length;
     });
     return total;
+  }
+
+  static List<int> getAllFree(List<TileLine> ls) {
+    var totalListofFree = List<int>.generate(0, (index) => 0);
+    int index = 0;
+    ls.forEach((element) {
+      element.refreshFreeTiles();
+      var sum = index * element.oldList!.length; //index the tiles
+      element.oldList!.forEach((arrayElement) {
+        totalListofFree.add(arrayElement.tileIndex + sum);
+      });
+    });
+    return totalListofFree;
+  }
+
+  static bool PlaceNewTiles2(List<TileLine> ls, {int rndCount = 2}) {
+    // int total = getTotalFree(ls);
+    var totalFree = getAllFree(ls);
+    if (totalFree.length == 0) return false;
+    if (totalFree.length == 1) {
+      return true;
+    }
+    var rnd = Random();
+
+    print("total free ${totalFree.length}");
+    int rndTileIndex = 3 * rnd.nextInt(100) +
+        rnd.nextInt(100) +
+        rnd.nextInt(100); //create random for placing index
+    rndTileIndex %= totalFree.length;
+    int tileNumber = totalFree[rndTileIndex];
+    int col = tileNumber % ls.first.oldList!.length;
+    int row = tileNumber ~/ ls.first.oldList!.length;
+    ls[row].oldList![col].tileIndex = 1;
+    return true;
   }
 
   static bool PlaceNewTiles(List<TileLine> ls, {int rndCount = 2}) {
@@ -93,6 +137,7 @@ class TileLine {
     int total = getTotalFree(ls);
     var rnd = Random();
     bool newTileAvailable = true;
+    print("total free ${total}");
     for (int i = 0; i < rndCount && total > 0; i++) {
       if (total == 0) {
         if (first)
