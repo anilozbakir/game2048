@@ -62,7 +62,7 @@ class MyGame extends FlameGame with KeyboardEvents {
         dir = Vector2(0, 1);
         List<TileLine> transpose = TileLine.GetTransposeMatrix(game.tileArray!);
         transpose.forEach((element) {
-          element.ShiftRight();
+          element.shiftRight2();
         });
         List<TileLine> transpose2 = TileLine.GetTransposeMatrix(transpose);
         int index = 0;
@@ -83,7 +83,7 @@ class MyGame extends FlameGame with KeyboardEvents {
 
         List<TileLine> transpose = TileLine.GetTransposeMatrix(game.tileArray!);
         transpose.forEach((element) {
-          element.ShiftLeft();
+          element.shiftLeft2();
         });
         List<TileLine> transpose2 = TileLine.GetTransposeMatrix(transpose);
         int index = 0;
@@ -95,19 +95,20 @@ class MyGame extends FlameGame with KeyboardEvents {
         });
         putNewTiles();
       } else if (keysPressed.contains(LogicalKeyboardKey.arrowLeft)) {
-        dv.log("up left");
+        dv.log(" left");
         dir = Vector2(-1, 0);
         game.tileArray!.forEach((element) {
-          element.ShiftLeft();
+          element.shiftLeft2();
           element.ApplyChanges();
         });
         putNewTiles();
       } else if (keysPressed.contains(LogicalKeyboardKey.arrowRight)) {
-        dv.log("up right");
+        dv.log(" right");
         dir = Vector2(1, 0);
-
+        int line = 1;
         game.tileArray!.forEach((element) {
-          element.ShiftRight();
+          dv.log("line:${line++}");
+          element.shiftRight2();
           element.ApplyChanges();
         });
         putNewTiles();
