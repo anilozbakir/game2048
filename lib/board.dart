@@ -15,13 +15,14 @@ class Tile extends SpriteComponent {
 
   Vector2 pos;
   int tile;
-  Tile(this.tile, this.pos) : super(size: Vector2.all(120)) {
+  Tile(this.tile, this.pos, Vector2 scale) : super(size: Vector2.all(120)) {
     int col = tile % 4;
     int row = (tile ~/ 4).toInt();
     // log('row: $row,col:$col');
     sprite = Sprite(spriteImage!.image,
         srcPosition: Vector2(col * 120, row * 120), srcSize: Vector2(120, 120));
     dv.log("loading image ${pos}");
+    this.scale = scale;
     anchor = Anchor.center;
   }
 

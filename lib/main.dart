@@ -1,6 +1,6 @@
-import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import "package:flame/game.dart";
+import 'package:game2048/debug_conf.dart';
 import 'package:game2048/game_board.dart';
 
 // import "package:flame/game.dart";
@@ -56,59 +56,63 @@ class MyGame extends FlameGame with KeyboardEvents {
       //   } else {}
       //   return KeyEventResult.handled;
       //  }
-      Vector2 dir = Vector2(1, 0);
+
       if (keysPressed.contains(LogicalKeyboardKey.arrowDown)) {
         dv.log("down key");
-        dir = Vector2(0, 1);
-        List<TileLine> transpose = TileLine.GetTransposeMatrix(game.tileArray!);
+//----
+        List<TileLine> transpose = TileLine.getTransposeMatrix(game.tileArray!);
         transpose.forEach((element) {
-          element.shiftRight2();
+          element.shiftRight();
         });
-        List<TileLine> transpose2 = TileLine.GetTransposeMatrix(transpose);
+        List<TileLine> transpose2 = TileLine.getTransposeMatrix(transpose);
+//---
         int index = 0;
-        if (!TileLine.PlaceNewTiles(transpose2)) {
-          dv.log("game end");
-          return KeyEventResult.handled;
-        }
-        game.tileArray!.forEach((element) {
-          dv.log('$index');
 
-          element.GetLineTileValues(transpose2[index++]);
+        game.tileArray!.forEach((element) {
+          //   dv.log('$index');
+
+          element.getLineTileValues(transpose2[index++]);
           element.ApplyChanges();
         });
         putNewTiles();
       } else if (keysPressed.contains(LogicalKeyboardKey.arrowUp)) {
-        dv.log("up key");
-        dir = Vector2(0, -1);
+        if (DebugConf.keyLog) {
+          dv.log("up key");
+        }
 
-        List<TileLine> transpose = TileLine.GetTransposeMatrix(game.tileArray!);
+        List<TileLine> transpose = TileLine.getTransposeMatrix(game.tileArray!);
         transpose.forEach((element) {
-          element.shiftLeft2();
+          element.shiftLefth();
         });
-        List<TileLine> transpose2 = TileLine.GetTransposeMatrix(transpose);
+        List<TileLine> transpose2 = TileLine.getTransposeMatrix(transpose);
         int index = 0;
+
         game.tileArray!.forEach((element) {
-          dv.log('$index');
-          element.GetLineTileValues(transpose2[index++]);
+          //dv.log('$index');
+          element.getLineTileValues(transpose2[index++]);
 
           element.ApplyChanges();
         });
         putNewTiles();
       } else if (keysPressed.contains(LogicalKeyboardKey.arrowLeft)) {
-        dv.log(" left");
-        dir = Vector2(-1, 0);
+        if (DebugConf.keyLog) {
+          dv.log(" left");
+        }
+
         game.tileArray!.forEach((element) {
-          element.shiftLeft2();
+          element.shiftLefth();
           element.ApplyChanges();
         });
         putNewTiles();
       } else if (keysPressed.contains(LogicalKeyboardKey.arrowRight)) {
-        dv.log(" right");
-        dir = Vector2(1, 0);
-        int line = 1;
+        if (DebugConf.keyLog) {
+          dv.log(" right");
+        }
+
+        //  int line = 1;
         game.tileArray!.forEach((element) {
-          dv.log("line:${line++}");
-          element.shiftRight2();
+          // dv.log("line:${line++}");
+          element.shiftRight();
           element.ApplyChanges();
         });
         putNewTiles();
@@ -121,7 +125,7 @@ class MyGame extends FlameGame with KeyboardEvents {
   }
 
   putNewTiles() {
-    TileLine.PlaceNewTiles2(game.tileArray!);
+    TileLine.placeNewTiles2(game.tileArray!);
     game.tileArray!.forEach((element) {
       element.ApplyChanges();
     });

@@ -40,14 +40,16 @@ class GameBoard extends PositionComponent {
     super.onLoad();
     //place the background
     dv.log("loading background");
+    var scale = Vector2(0.5, 0.5);
     Sprite background = await Sprite.load('p_background.png',
         srcPosition: Vector2(0, 0), srcSize: Vector2(128 * 4, 128 * 4));
     SpriteComponent backsprite =
-        SpriteComponent(sprite: background, scale: Vector2(1, 1));
+        SpriteComponent(sprite: background, scale: scale);
 
     add(backsprite);
     backsprite.position = Vector2(-60, -60) + size / 8;
-    var pos = backsprite.position;
+    var pos = Vector2(
+        backsprite.position.x * scale.x, backsprite.position.y * scale.y);
     dv.log('pos: $pos');
 
     tileArray = List.generate(4, (index) => new TileLine());
@@ -56,10 +58,12 @@ class GameBoard extends PositionComponent {
       int row = (i ~/ 4);
       int col = (i % 4);
       var pos = Vector2(col.toInt() * 128, row.toInt() * 128);
+      pos = Vector2(pos.x * scale.x, pos.y * scale.y);
+      bg = Tile(0, pos, scale);
 
-      bg = Tile(0, pos);
-
-      bg.position = Vector2(0, 0) + size / 8 + pos;
+      bg.position = Vector2(0, 0) +
+          Vector2((size.x / 8) * scale.x, (size.y / 8) * scale.y) +
+          pos;
       pos = bg.position;
 
       // int col = i % 4;
@@ -71,10 +75,10 @@ class GameBoard extends PositionComponent {
     }
     //place new tiles randomly
     TileLine.getTotalFree(tileArray!);
-    TileLine.PlaceNewTiles2(tileArray!);
-    tileArray!.forEach((element) {
+    TileLine.placeNewTiles2(tileArray!);
+    for (var element in tileArray!) {
       element.ApplyChanges();
-    });
+    }
   }
 
   @override
