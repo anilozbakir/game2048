@@ -56,10 +56,22 @@ class MyGame extends FlameGame with KeyboardEvents {
       //   } else {}
       //   return KeyEventResult.handled;
       //  }
-
+      if (isKeyDown) {
+        if (DebugConf.matrixChange) {
+          var total = "before:\n";
+          for (TileLine row in game.tileArray!) {
+            for (var element in row.oldList!) {
+              total += "${element.tileIndex} ";
+            }
+            total += "\n";
+          }
+          dv.log(total);
+        }
+      }
       if (keysPressed.contains(LogicalKeyboardKey.arrowDown)) {
         dv.log("down key");
 //----
+
         List<TileLine> transpose = TileLine.getTransposeMatrix(game.tileArray!);
         transpose.forEach((element) {
           element.shiftRight();
@@ -72,8 +84,18 @@ class MyGame extends FlameGame with KeyboardEvents {
           //   dv.log('$index');
 
           element.getLineTileValues(transpose2[index++]);
-          element.ApplyChanges();
+          element.applyChanges();
         });
+        if (DebugConf.matrixChange) {
+          var total = "after:\n";
+          for (TileLine row in game.tileArray!) {
+            for (var element in row.oldList!) {
+              total += "${element.tileIndex} ";
+            }
+            total += "\n";
+          }
+          dv.log(total);
+        }
         putNewTiles();
       } else if (keysPressed.contains(LogicalKeyboardKey.arrowUp)) {
         if (DebugConf.keyLog) {
@@ -91,8 +113,18 @@ class MyGame extends FlameGame with KeyboardEvents {
           //dv.log('$index');
           element.getLineTileValues(transpose2[index++]);
 
-          element.ApplyChanges();
+          element.applyChanges();
         });
+        if (DebugConf.matrixChange) {
+          var total = "after:\n";
+          for (TileLine row in game.tileArray!) {
+            for (var element in row.oldList!) {
+              total += "${element.tileIndex} ";
+            }
+            total += "\n";
+          }
+          dv.log(total);
+        }
         putNewTiles();
       } else if (keysPressed.contains(LogicalKeyboardKey.arrowLeft)) {
         if (DebugConf.keyLog) {
@@ -101,7 +133,7 @@ class MyGame extends FlameGame with KeyboardEvents {
 
         game.tileArray!.forEach((element) {
           element.shiftLefth();
-          element.ApplyChanges();
+          element.applyChanges();
         });
         putNewTiles();
       } else if (keysPressed.contains(LogicalKeyboardKey.arrowRight)) {
@@ -113,8 +145,18 @@ class MyGame extends FlameGame with KeyboardEvents {
         game.tileArray!.forEach((element) {
           // dv.log("line:${line++}");
           element.shiftRight();
-          element.ApplyChanges();
+          element.applyChanges();
         });
+        if (DebugConf.matrixChange) {
+          var total = "after:\n";
+          for (TileLine row in game.tileArray!) {
+            for (var element in row.oldList!) {
+              total += "${element.tileIndex} ";
+            }
+            total += "\n";
+          }
+          dv.log(total);
+        }
         putNewTiles();
       }
       //   game.MyComponents[0].position += Matrix2(5, 0, 0, 5) * dir;
@@ -127,7 +169,7 @@ class MyGame extends FlameGame with KeyboardEvents {
   putNewTiles() {
     TileLine.placeNewTiles2(game.tileArray!);
     game.tileArray!.forEach((element) {
-      element.ApplyChanges();
+      element.applyChanges();
     });
   }
 

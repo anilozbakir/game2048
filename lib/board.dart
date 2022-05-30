@@ -1,7 +1,6 @@
 // import 'dart:html';
 
 import "package:flame/components.dart";
-import 'dart:developer';
 import 'dart:ui' as d;
 import "package:flutter/material.dart";
 import "dart:developer" as dv;

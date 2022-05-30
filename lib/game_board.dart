@@ -77,7 +77,7 @@ class GameBoard extends PositionComponent {
     TileLine.getTotalFree(tileArray!);
     TileLine.placeNewTiles2(tileArray!);
     for (var element in tileArray!) {
-      element.ApplyChanges();
+      element.applyChanges();
     }
   }
 

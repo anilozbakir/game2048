@@ -18,9 +18,7 @@ import "debug_conf.dart";
 
 import 'dart:developer' as dv;
 
-import "dart:ui" as d;
-
-import "board.dart";
+//import "board.dart";
 import "dart:math";
 import 'debug_conf.dart';
 
@@ -33,8 +31,8 @@ class TileLine {
   TileLine({
     this.col = 0,
   }) {
-    oldList = List.generate(col, (index) => new TileData());
-    newList = List.generate(col, (index) => new TileData());
+    oldList = List.generate(col, (index) => TileData());
+    newList = List.generate(col, (index) => TileData());
     freeTiles = List.generate(0, (index) => 0);
   }
   bool add(TileData tiledata) {
@@ -51,7 +49,7 @@ class TileLine {
   static List<TileLine> getTransposeMatrix(List<TileLine> ls) {
     //create the new transposed list
     List<TileLine> lsOut = List.generate(
-        ls[0].newList!.length, (index) => new TileLine(col: ls.length));
+        ls[0].newList!.length, (index) => TileLine(col: ls.length));
 
     for (int index1 = 0; index1 < ls.length; index1++) {
       for (int index2 = 0; index2 < ls[0].newList!.length; index2++) {
@@ -65,12 +63,12 @@ class TileLine {
   refreshFreeTiles() {
     freeTiles!.clear();
     var index = 0;
-    oldList!.forEach((element) {
+    for (var element in oldList!) {
       if (element.tileIndex == 0) {
         freeTiles!.add(index);
       }
       index++;
-    });
+    }
   }
 
   static int getTotalFree(List<TileLine> ls) {
@@ -79,7 +77,7 @@ class TileLine {
       element.refreshFreeTiles();
       total += element.freeTiles!.length;
     }
-    ;
+
     return total;
   }
 
@@ -120,11 +118,13 @@ class TileLine {
           rnd.nextInt(100) +
           rnd.nextInt(100); //create random for placing index
       rndTileIndex %= totalFree.length;
+
       int tileNumber = totalFree[rndTileIndex];
       int col = tileNumber % ls.first.oldList!.length;
       int row = tileNumber ~/ ls.first.oldList!.length;
+
       ls[row].oldList![col].tileIndex = 1;
-      totalFree.remove(rndTileIndex);
+      totalFree.remove(tileNumber);
       if (totalFree.isEmpty) break;
       i++;
     }
@@ -166,7 +166,7 @@ class TileLine {
         newList![activeIndex].tileIndex += 1;
         solidIndex = activeIndex;
       } else if (oldList![index].tileIndex != 0 &&
-          activeIndex < (oldList!.length - 2)) {
+          activeIndex < (oldList!.length - 1)) {
         if (DebugConf.shiftLoop) {
           dv.log("adding new ${oldList![index].tileIndex}");
         }
@@ -182,9 +182,9 @@ class TileLine {
           "newlist ${newList![0].tileIndex}  ${newList![1].tileIndex} ${newList![2].tileIndex} ${newList![3].tileIndex}");
     }
     //now we have two different arrays
-    oldList!.forEach((element) {
+    for (var element in oldList!) {
       element.tileIndex = 0;
-    });
+    }
     index = oldList!.length - 1;
     while (activeIndex > -1) {
       oldList![index].tileIndex = newList![activeIndex].tileIndex;
@@ -235,9 +235,9 @@ class TileLine {
           "newlist ${newList![0].tileIndex}  ${newList![1].tileIndex} ${newList![2].tileIndex} ${newList![3].tileIndex}");
     }
     //now we have two different arrays
-    oldList!.forEach((element) {
+    for (var element in oldList!) {
       element.tileIndex = 0;
-    });
+    }
     index = 0;
     while (activeIndex < oldList!.length) {
       oldList![index].tileIndex = newList![activeIndex].tileIndex;
@@ -250,16 +250,11 @@ class TileLine {
     }
   }
 
-  void ApplyChanges() {
-    oldList!.forEach((element) {
-      // if (element.tileImage == null) {
-      //   print("tileImage ${element.tileIndex} is null");
-      // } else if (element.tileImage!.sprite == null) {
-      //   print("sprite ${element.tileIndex} is null");
-      // }
+  void applyChanges() {
+    for (var element in oldList!) {
       element.tileImage!.changeSizeAndPosition(
           element.tileIndex, element.tileImage!.sprite!.srcSize);
-    });
+    }
   }
 }
 
