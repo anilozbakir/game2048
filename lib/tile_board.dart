@@ -144,7 +144,60 @@ class TileLine {
     }
   }
 
-  void shiftRight() {
+  // void shiftRight2() {
+  //   var solidIndex = -1; //index for no atraction point
+  //   var activeIndex = -1; //index for atraction point
+  //   newList?.forEach((element) {
+  //     element.tileIndex = 0; //clear the new list
+  //   });
+
+  //   var index = 0;
+  //   if (DebugConf.shiftLoop) {
+  //     dv.log("shifting right");
+  //   }
+  //   while (index < oldList!.length) {
+  //     if (activeIndex > -1 &&
+  //         solidIndex != activeIndex &&
+  //         newList![activeIndex].tileIndex != 0 &&
+  //         newList![activeIndex].tileIndex == oldList![index].tileIndex) {
+  //       if (DebugConf.shiftLoop) {
+  //         dv.log("adding same ${oldList![index].tileIndex}");
+  //       }
+  //       newList![activeIndex].tileIndex += 1;
+  //       solidIndex = activeIndex;
+  //     } else if (oldList![index].tileIndex != 0 &&
+  //         activeIndex < (oldList!.length - 1)) {
+  //       if (DebugConf.shiftLoop) {
+  //         dv.log("adding new ${oldList![index].tileIndex}");
+  //       }
+  //       activeIndex++;
+  //       newList![activeIndex].tileIndex = oldList![index].tileIndex;
+
+  //       solidIndex = activeIndex - 1;
+  //     }
+  //     index++;
+  //   }
+  //   if (DebugConf.shiftLoop) {
+  //     dv.log(
+  //         "newlist ${newList![0].tileIndex}  ${newList![1].tileIndex} ${newList![2].tileIndex} ${newList![3].tileIndex}");
+  //   }
+  //   //now we have two different arrays
+  //   for (var element in oldList!) {
+  //     element.tileIndex = 0;
+  //   }
+  //   index = oldList!.length - 1;
+  //   while (activeIndex > -1) {
+  //     oldList![index].tileIndex = newList![activeIndex].tileIndex;
+  //     activeIndex--;
+  //     index--;
+  //   }
+  //   if (DebugConf.shiftLoop) {
+  //     dv.log(
+  //         "final list ${oldList![0].tileIndex}  ${oldList![1].tileIndex} ${oldList![2].tileIndex} ${oldList![3].tileIndex}");
+  //   }
+  // }
+
+  void shiftLeft() {
     var solidIndex = -1; //index for no atraction point
     var activeIndex = -1; //index for atraction point
     newList?.forEach((element) {
@@ -153,7 +206,7 @@ class TileLine {
 
     var index = 0;
     if (DebugConf.shiftLoop) {
-      dv.log("shifting right");
+      dv.log("shifting left new");
     }
     while (index < oldList!.length) {
       if (activeIndex > -1 &&
@@ -185,11 +238,14 @@ class TileLine {
     for (var element in oldList!) {
       element.tileIndex = 0;
     }
-    index = oldList!.length - 1;
-    while (activeIndex > -1) {
-      oldList![index].tileIndex = newList![activeIndex].tileIndex;
-      activeIndex--;
-      index--;
+    index = 0;
+    if (DebugConf.shiftLoop) {
+      dv.log("new movements $activeIndex");
+    }
+    while (index < oldList!.length) {
+      oldList![index].tileIndex = newList![index].tileIndex;
+      // activeIndex++;
+      index++;
     }
     if (DebugConf.shiftLoop) {
       dv.log(
@@ -197,7 +253,60 @@ class TileLine {
     }
   }
 
-  void shiftLefth() {
+  // void shiftLeft2() {
+  //   var solidIndex = oldList!.length; //index for no atraction point
+  //   var activeIndex = oldList!.length; //index for atraction point
+  //   newList?.forEach((element) {
+  //     element.tileIndex = 0; //clear the new list
+  //   });
+
+  //   var index = oldList!.length - 1;
+  //   if (DebugConf.shiftLoop) {
+  //     dv.log("shifting left");
+  //   }
+  //   while (index > -1) {
+  //     if (activeIndex < oldList!.length &&
+  //         newList![activeIndex].tileIndex != 0 &&
+  //         newList![activeIndex].tileIndex == oldList![index].tileIndex &&
+  //         solidIndex != activeIndex) {
+  //       if (DebugConf.shiftLoop) {
+  //         dv.log("adding same ${oldList![index].tileIndex}");
+  //       }
+  //       newList![activeIndex].tileIndex += 1;
+  //       solidIndex = activeIndex;
+  //     } else if (oldList![index].tileIndex != 0 && activeIndex > 0) {
+  //       if (DebugConf.shiftLoop) {
+  //         dv.log("adding new ${oldList![index].tileIndex}");
+  //       }
+  //       activeIndex--;
+  //       newList![activeIndex].tileIndex = oldList![index].tileIndex;
+
+  //       solidIndex = activeIndex + 1;
+  //     }
+
+  //     index--;
+  //   }
+  //   if (DebugConf.shiftLoop) {
+  //     dv.log(
+  //         "newlist ${newList![0].tileIndex}  ${newList![1].tileIndex} ${newList![2].tileIndex} ${newList![3].tileIndex}");
+  //   }
+  //   //now we have two different arrays
+  //   for (var element in oldList!) {
+  //     element.tileIndex = 0;
+  //   }
+  //   index = 0;
+  //   while (activeIndex < oldList!.length) {
+  //     oldList![index].tileIndex = newList![activeIndex].tileIndex;
+  //     activeIndex++;
+  //     index++;
+  //   }
+  //   if (DebugConf.shiftLoop) {
+  //     dv.log(
+  //         "final list ${oldList![0].tileIndex}  ${oldList![1].tileIndex} ${oldList![2].tileIndex} ${oldList![3].tileIndex}");
+  //   }
+  // }
+
+  void shiftRight() {
     var solidIndex = oldList!.length; //index for no atraction point
     var activeIndex = oldList!.length; //index for atraction point
     newList?.forEach((element) {
@@ -239,9 +348,9 @@ class TileLine {
       element.tileIndex = 0;
     }
     index = 0;
-    while (activeIndex < oldList!.length) {
-      oldList![index].tileIndex = newList![activeIndex].tileIndex;
-      activeIndex++;
+    while (index < oldList!.length) {
+      oldList![index].tileIndex = newList![index].tileIndex;
+      // activeIndex++;
       index++;
     }
     if (DebugConf.shiftLoop) {

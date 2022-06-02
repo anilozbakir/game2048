@@ -18,8 +18,10 @@ import 'dart:developer' as dv;
 import "tile_board.dart";
 
 main() {
-  final myGame =
-      MyGame(GameBoard(size: Vector2(640, 480), position: Vector2(100, 100)));
+  final myGame = MyGame(GameBoard(
+      size: Vector2(800, 640),
+      position: Vector2(100, 100),
+      matrix: Vector2(7, 7)));
   runApp(
     GameWidget(
       game: myGame,
@@ -104,7 +106,7 @@ class MyGame extends FlameGame with KeyboardEvents {
 
         List<TileLine> transpose = TileLine.getTransposeMatrix(game.tileArray!);
         transpose.forEach((element) {
-          element.shiftLefth();
+          element.shiftLeft();
         });
         List<TileLine> transpose2 = TileLine.getTransposeMatrix(transpose);
         int index = 0;
@@ -132,7 +134,7 @@ class MyGame extends FlameGame with KeyboardEvents {
         }
 
         game.tileArray!.forEach((element) {
-          element.shiftLefth();
+          element.shiftLeft();
           element.applyChanges();
         });
         putNewTiles();
