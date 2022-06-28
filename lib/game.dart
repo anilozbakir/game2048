@@ -18,6 +18,7 @@ import 'package:flutter/services.dart';
 import 'dart:developer' as dv;
 import "tile_board.dart";
 import "tile.dart";
+import "game_platform_config.dart";
 // main() {
 //   final myGame = MyGame(GameBoard(
 //       size: Vector2(800, 640),
@@ -36,15 +37,24 @@ class MyGame extends FlameGame
   TextPaint gameOverText = TextPaint(
       style: const TextStyle(fontStyle: FontStyle.normal, fontSize: 24));
   TextPaint scoreText = TextPaint(style: const TextStyle(fontSize: 24));
-  // ButtonComponent backButton = ButtonComponent();
-  // ButtonComponent homeButton = ButtonComponent();
+  ButtonComponent backButton = ButtonComponent();
+  ButtonComponent homeButton = ButtonComponent();
   int matrixCol = 0;
   int matrixRow = 0;
   Vector2 size;
-  Vector2 matrix;
+  MatrixFormat matrix;
+  late Vector2 scale;
   MyGame({required this.size, required this.matrix}) : super() {
-    matrixCol = matrix.x.toInt();
-    matrixRow = matrix.y.toInt();
+    var matrixOut = Constants.MatrixConstants[matrix]!.matrix;
+    matrixCol = matrixOut.x.toInt();
+    matrixRow = matrixOut.y.toInt();
+    scale = Constants.MatrixConstants[matrix]!.scale;
+
+    dv.log("selected platform ${defaultTargetPlatform}");
+    var scale2 = Constants.constants[defaultTargetPlatform]!.scale;
+    scale = Vector2(scale.x * scale2.x, scale.y * scale2.y);
+
+    dv.log("selected platform ${TargetPlatform.android}");
   }
   @override
   Future<void> onLoad() async {
@@ -54,7 +64,7 @@ class MyGame extends FlameGame
     super.onLoad();
     //place the background
     dv.log("loading background matrix: $matrixCol x $matrixRow");
-    var scale = Vector2(0.5, 0.5);
+
     var background = await Sprite.load('p_background.png',
         srcPosition: Vector2(0, 0), srcSize: Vector2(128, 128));
     var bScale =

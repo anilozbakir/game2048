@@ -7,28 +7,27 @@ class Constants {
     TargetPlatform.android: Constant.Android(),
     TargetPlatform.windows: Constant.Windows(),
   };
+  static Map<MatrixFormat, Dimensions> MatrixConstants = {
+    MatrixFormat.map4x4:
+        Dimensions(matrix: Vector2(4, 4), scale: Vector2(0.5, 0.5)),
+    MatrixFormat.map5x5:
+        Dimensions(matrix: Vector2(5, 5), scale: Vector2(0.5, 0.5)),
+    MatrixFormat.map6x6:
+        Dimensions(matrix: Vector2(6, 6), scale: Vector2(0.5, 0.5)),
+  };
 }
 
 class Constant {
   var scale = Vector2(0.5, 0.5);
   Constant.Android() {
-    scale = Vector2(0.5, 0.5);
+    scale = Vector2(0.8, 0.8);
   }
   Constant.Windows() {
     scale = Vector2(0.75, 0.75);
   }
 }
 
-enum MatrixFormat { map4x4, map5x7, map9x9 }
-
-Map<MatrixFormat, Dimensions> MatrixConstants = {
-  MatrixFormat.map4x4:
-      Dimensions(matrix: Vector2(4, 4), scale: Vector2(0.5, 0.5)),
-  MatrixFormat.map5x7:
-      Dimensions(matrix: Vector2(5, 7), scale: Vector2(0.5, 0.5)),
-  MatrixFormat.map9x9:
-      Dimensions(matrix: Vector2(9, 9), scale: Vector2(0.5, 0.5)),
-};
+enum MatrixFormat { map4x4, map5x5, map6x6 }
 
 class Dimensions {
   Vector2 matrix;

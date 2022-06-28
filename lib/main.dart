@@ -1,7 +1,9 @@
 import 'package:flame/game.dart';
 import "package:flutter/material.dart";
+import 'package:game2048/game_platform_config.dart';
 import "game.dart";
 import 'package:game2048/game_board.dart';
+import "game_platform_config.dart";
 
 main() {
   runApp(const MainMenu());
@@ -50,7 +52,7 @@ class GameMenu extends StatelessWidget {
                                   game: MyGame(
                                       size: Vector2(800, 640),
                                       // position: Vector2(100, 100),
-                                      matrix: Vector2(4, 4)),
+                                      matrix: MatrixFormat.map4x4),
                                 )))),
               ),
               Container(
@@ -72,7 +74,7 @@ class GameMenu extends StatelessWidget {
                                   game: MyGame(
                                       size: Vector2(800, 640),
                                       //    position: Vector2(100, 100),
-                                      matrix: Vector2(5, 5)),
+                                      matrix: MatrixFormat.map5x5),
                                 )))),
               ),
               Container(
@@ -91,11 +93,10 @@ class GameMenu extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                             builder: (builder) => GameWidget(
-                                  game: MyGame(
-                                      size: Vector2(800, 640),
-                                      //        position: Vector2(100, 100),
-                                      matrix: Vector2(6, 6)),
-                                )))),
+                                game: MyGame(
+                                    size: Vector2(800, 640),
+                                    //        position: Vector2(100, 100),
+                                    matrix: MatrixFormat.map6x6))))),
               )
             ],
           )),
