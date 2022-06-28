@@ -2,7 +2,7 @@
 
 import 'package:flame/components.dart';
 
-import 'board.dart';
+import 'tile.dart';
 import "debug_conf.dart";
 // import "package:flame/game.dart";
 // import 'package:flame/input.dart';
@@ -361,6 +361,8 @@ class TileLine {
 
   void applyChanges() {
     for (var element in oldList!) {
+      // dv.log(
+      //     "putting new tiles ${element.tileImage!.positionInMatrix} ${element.tileIndex}");
       element.tileImage!.changeSizeAndPosition(
           element.tileIndex, element.tileImage!.sprite!.srcSize);
     }
@@ -369,12 +371,7 @@ class TileLine {
 
 class TileData {
   int tileIndex;
-  bool shifted;
 
   Tile? tileImage;
-  TileData({this.tileIndex = 0, this.shifted = false, this.tileImage});
-  void clear() {
-    tileIndex = 0;
-    shifted = false;
-  }
+  TileData({this.tileIndex = 0, this.tileImage});
 }

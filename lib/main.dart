@@ -12,7 +12,7 @@ class MainMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       title: "2048 game",
       home: GameMenu(),
     );
@@ -34,7 +34,7 @@ class GameMenu extends StatelessWidget {
               Container(
                 height: 120.0,
                 width: 120.0,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   image: DecorationImage(
                     image: AssetImage('assets/images/matrix4x4.png'),
                     fit: BoxFit.fill,
@@ -42,21 +42,21 @@ class GameMenu extends StatelessWidget {
                   shape: BoxShape.rectangle,
                 ),
                 child: TextButton(
-                    child: Text("4x4"),
+                    child: const Text("4x4"),
                     onPressed: () => Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (builder) => GameWidget(
-                                  game: MyGame(GameBoard(
+                                  game: MyGame(
                                       size: Vector2(800, 640),
-                                      position: Vector2(100, 100),
-                                      matrix: Vector2(4, 4))),
+                                      // position: Vector2(100, 100),
+                                      matrix: Vector2(4, 4)),
                                 )))),
               ),
               Container(
                 height: 120.0,
                 width: 120.0,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   image: DecorationImage(
                     image: AssetImage('assets/images/matrix5x5.png'),
                     fit: BoxFit.fill,
@@ -64,21 +64,21 @@ class GameMenu extends StatelessWidget {
                   shape: BoxShape.rectangle,
                 ),
                 child: TextButton(
-                    child: Text("5x5"),
+                    child: const Text("5x5"),
                     onPressed: () => Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (builder) => GameWidget(
-                                  game: MyGame(GameBoard(
+                                  game: MyGame(
                                       size: Vector2(800, 640),
-                                      position: Vector2(100, 100),
-                                      matrix: Vector2(5, 5))),
+                                      //    position: Vector2(100, 100),
+                                      matrix: Vector2(5, 5)),
                                 )))),
               ),
               Container(
                 height: 120.0,
                 width: 120.0,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   image: DecorationImage(
                     image: AssetImage('assets/images/matrix6x6.png'),
                     fit: BoxFit.fill,
@@ -86,15 +86,15 @@ class GameMenu extends StatelessWidget {
                   shape: BoxShape.rectangle,
                 ),
                 child: TextButton(
-                    child: Text("6x6"),
+                    child: const Text("6x6"),
                     onPressed: () => Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (builder) => GameWidget(
-                                  game: MyGame(GameBoard(
+                                  game: MyGame(
                                       size: Vector2(800, 640),
-                                      position: Vector2(100, 100),
-                                      matrix: Vector2(6, 6))),
+                                      //        position: Vector2(100, 100),
+                                      matrix: Vector2(6, 6)),
                                 )))),
               )
             ],

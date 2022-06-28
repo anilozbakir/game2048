@@ -4,17 +4,25 @@ import "package:flame/components.dart";
 import 'dart:ui' as d;
 import "package:flutter/material.dart";
 import "dart:developer" as dv;
+import "package:flame/components.dart" as cmp;
+import 'package:flame/input.dart';
+import 'package:game2048/game_board.dart';
+import "game.dart";
 
-class Tile extends SpriteComponent {
+class Tile extends SpriteComponent with cmp.Draggable {
   // creates a component that renders the crate.png sprite, with size 16 x 16  }
   static Sprite? spriteImage;
+  Vector2 lastPostion = Vector2.all(0);
   static loadImage() async {
     spriteImage = await Sprite.load('p_2048_map_2.png');
   }
 
   Vector2 pos;
   int tile;
-  Tile(this.tile, this.pos, Vector2 scale) : super(size: Vector2.all(120)) {
+  MyGame parent;
+  Vector2 positionInMatrix;
+  Tile(this.parent, this.tile, this.pos, Vector2 scale, this.positionInMatrix)
+      : super(size: Vector2.all(120)) {
     int col = tile % 4;
     int row = (tile ~/ 4).toInt();
     // log('row: $row,col:$col');
@@ -22,7 +30,7 @@ class Tile extends SpriteComponent {
         srcPosition: Vector2(col * 120, row * 120), srcSize: Vector2(120, 120));
     dv.log("loading image ${pos}");
     this.scale = scale;
-    anchor = Anchor.center;
+    anchor = Anchor.topLeft;
   }
 
   @override
@@ -80,5 +88,25 @@ class Tile extends SpriteComponent {
   @override
   void render(Canvas canvas) {
     super.render(canvas);
+  }
+
+  @override
+  bool onDragStart(int pointerId, DragStartInfo info) {
+    parent.dragStart = positionInMatrix;
+    return false;
+  }
+
+  @override
+  bool onDragUpdate(int pointerId, DragUpdateInfo info) {
+    lastPostion = info.eventPosition.global;
+    return false;
+  }
+
+  @override
+  bool onDragEnd(int pointerId, DragEndInfo event) {
+    var last = parent.getClickCoordinate(lastPostion);
+
+    parent.dragEnd = last;
+    return false;
   }
 }
