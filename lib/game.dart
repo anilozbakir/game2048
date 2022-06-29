@@ -37,7 +37,7 @@ class MyGame extends FlameGame
   TextPaint gameOverText = TextPaint(
       style: const TextStyle(fontStyle: FontStyle.normal, fontSize: 24));
   TextPaint scoreText = TextPaint(style: const TextStyle(fontSize: 24));
-  ButtonComponent backButton = ButtonComponent();
+  ButtonComponent undoButton = ButtonComponent(onPressed: () {});
   ButtonComponent homeButton = ButtonComponent();
   int matrixCol = 0;
   int matrixRow = 0;
@@ -52,6 +52,7 @@ class MyGame extends FlameGame
 
     dv.log("selected platform ${defaultTargetPlatform}");
     var scale2 = Constants.constants[defaultTargetPlatform]!.scale;
+    var strart = Constants.constants[defaultTargetPlatform]!.scale;
     scale = Vector2(scale.x * scale2.x, scale.y * scale2.y);
 
     dv.log("selected platform ${TargetPlatform.android}");
@@ -72,6 +73,7 @@ class MyGame extends FlameGame
     backsprite = SpriteComponent(sprite: background, scale: bScale);
 
     add(backsprite!);
+
     backsprite!.position = size / 8;
     var posBackGround = Vector2(
         backsprite!.position.x * scale.x, backsprite!.position.y * scale.y);
@@ -103,6 +105,14 @@ class MyGame extends FlameGame
     for (var element in tileArray!) {
       element.applyChanges();
     }
+    var buttonNewSprite = await Sprite.load('new_button.png',
+        srcPosition: Vector2(0, 0), srcSize: Vector2(128, 128));
+    undoButton.add(SpriteComponent(
+      sprite: buttonNewSprite,
+    ));
+    undoButton.position =
+        tileArray![matrixRow - 1].oldList![0].tileImage!.position +
+            tileArray![matrixRow - 1].oldList![0].tileImage!.size * 1.1;
   }
 
   @override

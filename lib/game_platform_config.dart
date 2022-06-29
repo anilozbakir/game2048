@@ -19,11 +19,15 @@ class Constants {
 
 class Constant {
   var scale = Vector2(0.5, 0.5);
+  var start = Vector2.all(0);
+
   Constant.Android() {
     scale = Vector2(0.8, 0.8);
+    start = Vector2(50, 20);
   }
   Constant.Windows() {
     scale = Vector2(0.75, 0.75);
+    start = Vector2(50, 20);
   }
 }
 
