@@ -13,7 +13,7 @@ class GameData {
 }
 
 class GameParameters {
-  int id = -1;
+ 
   MatrixFormat format = MatrixFormat.map4x4;
   int highScore = 0;
   DateTime lastLogin = DateTime.now();
@@ -29,10 +29,9 @@ class GameParameters {
   GameParameters.temp();
 
   GameParameters(
-      {required this.format, required this.lastGame, required this.id}) {}
+      {required this.format, required this.lastGame  }) {}
   GameParameters.fromMap(Map<String, dynamic> map)
-      : id = map["id"],
-        format = MatrixFormat.values[map["values"]],
+      : format = MatrixFormat.values[map["format"]],
         highScore = map["highScore"],
         lastLogin = DateTime.parse(map["lastLogin"]),
         lastGame = map["lastGame"];
@@ -43,7 +42,7 @@ class GameParameters {
   //}
   Map<String, dynamic> toMap() {
     var map = Map<String, dynamic>();
-    map["id"] = id;
+   // map["id"] = id;
     map["format"] = format;
     map["highScore"] = highScore;
     map["lastLogin"] = DateTime.now().toIso8601String();

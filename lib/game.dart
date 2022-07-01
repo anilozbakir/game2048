@@ -19,6 +19,7 @@ import 'dart:developer' as dv;
 import "tile_board.dart";
 import "tile.dart";
 import "game_platform_config.dart";
+import "rows.dart";
 // main() {
 //   final myGame = MyGame(GameBoard(
 //       size: Vector2(800, 640),
@@ -36,14 +37,19 @@ class MyGame extends FlameGame
   //int twopower=1;
   TextPaint gameOverText = TextPaint(
       style: const TextStyle(fontStyle: FontStyle.normal, fontSize: 24));
+  SpriteComponent scoreImage = SpriteComponent();
+  SpriteComponent highestScoreImage = SpriteComponent();
   TextPaint scoreText = TextPaint(style: const TextStyle(fontSize: 24));
-  ButtonComponent undoButton = ButtonComponent(onPressed: () {});
-  ButtonComponent homeButton = ButtonComponent();
+  TextPaint highestScoreText = TextPaint(style: const TextStyle(fontSize: 24));
+  late ButtonComponent undoButton;
+  late ButtonComponent homeButton;
+
   int matrixCol = 0;
   int matrixRow = 0;
   Vector2 size;
   MatrixFormat matrix;
   late Vector2 scale;
+  Rows? userMenu;
   MyGame({required this.size, required this.matrix}) : super() {
     var matrixOut = Constants.MatrixConstants[matrix]!.matrix;
     matrixCol = matrixOut.x.toInt();
@@ -52,7 +58,6 @@ class MyGame extends FlameGame
 
     dv.log("selected platform ${defaultTargetPlatform}");
     var scale2 = Constants.constants[defaultTargetPlatform]!.scale;
-    var strart = Constants.constants[defaultTargetPlatform]!.scale;
     scale = Vector2(scale.x * scale2.x, scale.y * scale2.y);
 
     dv.log("selected platform ${TargetPlatform.android}");
@@ -64,6 +69,25 @@ class MyGame extends FlameGame
     // MyComponents = List.generate(16, (i) {
     super.onLoad();
     //place the background
+    //
+
+    var homeButtonSprite = await Sprite.load('new_game.png',
+        srcPosition: Vector2(0, 0), srcSize: Vector2(128, 128));
+    homeButton = ButtonComponent(
+        button: SpriteComponent(
+      sprite: homeButtonSprite,
+      size: Vector2(128 * scale.x, 128 * scale.y),
+    ));
+
+    var buttonNewSprite = await Sprite.load('new_game.png',
+        srcPosition: Vector2(0, 0), srcSize: Vector2(128, 128));
+
+    undoButton = ButtonComponent(
+        button: SpriteComponent(
+      sprite: buttonNewSprite,
+      size: Vector2(128 * scale.x, 128 * scale.y),
+    ));
+    await initMenu();
     dv.log("loading background matrix: $matrixCol x $matrixRow");
 
     var background = await Sprite.load('p_background.png',
@@ -74,11 +98,7 @@ class MyGame extends FlameGame
 
     add(backsprite!);
 
-    backsprite!.position = size / 8;
-    var posBackGround = Vector2(
-        backsprite!.position.x * scale.x, backsprite!.position.y * scale.y);
-    dv.log('pos: $posBackGround');
-    backsprite!.position = posBackGround;
+    backsprite!.position = userMenu!.presentPosition;
     tileArray = List.generate(matrixRow, (index) => TileLine());
     //backsprite!.position += position;
     Tile bg;
@@ -89,7 +109,7 @@ class MyGame extends FlameGame
       pos = Vector2(pos.x * scale.x, pos.y * scale.y);
       bg = Tile(this, 0, pos, scale, Vector2(col.toDouble(), row.toDouble()));
 
-      bg.position = posBackGround + pos; // + position;
+      bg.position = userMenu!.presentPosition + pos; // + position;
       pos = bg.position;
 
       // int col = i % 4;b
@@ -105,14 +125,39 @@ class MyGame extends FlameGame
     for (var element in tileArray!) {
       element.applyChanges();
     }
-    var buttonNewSprite = await Sprite.load('new_button.png',
+    add(scoreImage);
+    add(highestScoreImage);
+    add(undoButton);
+    add(homeButton);
+  }
+
+  initMenu() async {
+    var scaleVector = Vector2(128 * scale.x, 128 * scale.y);
+    userMenu = Rows(size / 16,
+        topPadding: Vector2(0, scaleVector.y / 8),
+        bottomPadding: Vector2(0, scaleVector.y / 8),
+        rightPadding: Vector2(scaleVector.x / 4, 0),
+        leftPadding: Vector2(scaleVector.x / 4, 0),
+        componentDimension: scaleVector);
+
+    scoreImage.sprite = await Sprite.load('new_game.png',
         srcPosition: Vector2(0, 0), srcSize: Vector2(128, 128));
-    undoButton.add(SpriteComponent(
-      sprite: buttonNewSprite,
-    ));
-    undoButton.position =
-        tileArray![matrixRow - 1].oldList![0].tileImage!.position +
-            tileArray![matrixRow - 1].oldList![0].tileImage!.size * 1.1;
+
+    highestScoreImage.sprite = await Sprite.load('new_button.png',
+        srcPosition: Vector2(0, 0), srcSize: Vector2(128, 128));
+
+    //firstrow
+    userMenu!.addComponent(scoreImage);
+    userMenu!.addComponent(highestScoreImage);
+    userMenu!.newRow();
+    userMenu!
+        .addText(GameText(title: "scoreText", message: "0", paint: scoreText));
+    userMenu!.addText(GameText(
+        title: "highestScoreText", message: "0", paint: highestScoreText));
+    userMenu!.newRow();
+    userMenu!.addButton(undoButton);
+    userMenu!.addButton(homeButton);
+    userMenu!.newRow();
   }
 
   @override
@@ -230,6 +275,7 @@ class MyGame extends FlameGame
   @override
   void render(Canvas canvas) {
     super.render(canvas);
+    userMenu!.render(canvas);
   }
 
   @override

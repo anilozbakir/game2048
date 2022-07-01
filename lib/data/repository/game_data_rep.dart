@@ -6,8 +6,8 @@ import 'package:path/path.dart';
 import "dart:developer" as dv;
 import "../model/game_data.dart";
 
-class HolidayRep {
-  HolidayRep() : super();
+class GameDataRep {
+  GameDataRep() : super();
   Database? database;
 
   init() async {
@@ -17,7 +17,7 @@ class HolidayRep {
         onCreate: (Database db, int version) async {
       // When creating the db, create the table
       await db.execute(
-          'CREATE TABLE GameData (id INTEGER PRIMARY KEY,matrix INTEGER,highScore INTEGER,lastGame TEXT )');
+          'CREATE TABLE GameData (matrix INTEGER PRIMARY KEY ,highScore INTEGER,lastGame TEXT )');
     });
     list().then((value) => {});
   }
@@ -26,7 +26,7 @@ class HolidayRep {
     var id1 = 0;
     await database!.transaction((txn) async {
       id1 = await txn.rawInsert(
-          'INSERT INTO GameData(  matrix, highScore, lastGame ) VALUES("${data.format}" , "${data.highScore}" ,"${data.lastGame}"  )');
+          'INSERT INTO GameData( highScore, lastGame ) VALUES(  "${data.highScore}" ,"${data.lastGame}"  )');
       dv.log('inserted1 to gameData table: $id1');
     });
     return id1;
@@ -34,13 +34,13 @@ class HolidayRep {
 
   updat(GameParameters data) async {
     int count = await database!.rawUpdate(
-        'UPDATE GameData SET matrix = ?, highScore = ?,lastGame = ? WHERE id = ?',
-        [(data.format), (data.highScore), (data.lastGame), data.id]);
+        'UPDATE GameData SET highScore = ?,lastGame = ? WHERE format = ?',
+        [(data.highScore), (data.lastGame), data.format]);
   }
 
-  delete(int id) async {
+  delete(int format) async {
     var count = await database!
-        .rawDelete('DELETE FROM GameData WHERE id = ?', ["$id "]);
+        .rawDelete('DELETE FROM GameData WHERE format = ?', ["$format  "]);
     assert(count == 1);
   }
 
@@ -60,7 +60,7 @@ class HolidayRep {
       dv.log("error occured");
       await database!
           .execute(
-              'CREATE TABLE GameData (id INTEGER PRIMARY KEY,matrix INTEGER,highScore INTEGER,lastGame TEXT )')
+              'CREATE TABLE GameData ( format INTEGER PRIMARY KEY,highScore INTEGER,lastGame TEXT )')
           .whenComplete(() => dv.log("created GameData table"));
 
       List<Map<String, dynamic>> newMap = [{}];
@@ -72,16 +72,16 @@ class HolidayRep {
     return holiday;
   }
 
-  Future<GameParameters> get(int id) async {
+  Future<GameParameters> get(int format) async {
     GameParameters event = GameParameters.temp();
-    await database!
-        .rawQuery('SELECT * FROM Holiday WHERE id = ?', ["$id "]).then((value) {
+    await database!.rawQuery(
+        'SELECT * FROM GameData WHERE format = ?', ["$format "]).then((value) {
       if (value.isNotEmpty) {
         event = GameParameters.fromMap(value.first);
       }
     });
     dv.log(
-        "get from holiday $id ${event.format}}  ${event.highScore}  ${event.lastGame}");
+        "got from gameData   ${event.format}}  ${event.highScore}  ${event.lastGame}");
     return event;
   }
 }
