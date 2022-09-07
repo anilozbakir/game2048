@@ -6,7 +6,7 @@ import "package:flutter/material.dart";
 import "dart:developer" as dv;
 import "package:flame/components.dart" as cmp;
 import 'package:flame/input.dart';
-import 'package:game2048/game_board.dart';
+ 
 import "game.dart";
 
 class Tile extends SpriteComponent with cmp.Draggable {

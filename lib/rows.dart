@@ -7,6 +7,8 @@ import "dart:ui";
 import "dart:developer" as dv;
 
 class Rows {
+   
+ 
   Vector2 topPadding;
   Vector2 bottomPadding;
   Vector2 leftPadding;
@@ -41,13 +43,42 @@ class Rows {
     _presentPosition += leftPadding;
   }
 
-  addButton(ButtonComponent component) {
+  addText2(GameText paint,Vector2 distance) {
     _presentPosition += rightPadding;
+    paint.position = presentPosition;
+    dv.log("adding text to ${presentPosition}");
+    texts[paint.title] = paint;
+    _presentPosition += Vector2(distance.x, 0);
+    _presentPosition += leftPadding;
+  }
+  
+  addTextOn(GameText paint,ButtonComponent parentVector2 ,Vector2 paddingTop,Vector2 paddingLeft) {
+    
+    paint.position = parentVector2.position+paddingTop+paddingLeft;
+    dv.log("text position${paint.position}");
+    texts[paint.title] = paint;
+  
+  }
+
+
+  addTextAndBackGround(GameText paint, ButtonComponent component) {
+    _presentPosition += rightPadding;
+    paint.position = presentPosition;
     component.position = presentPosition;
+    buttons.add(component);
+    dv.log("adding text and background to ${presentPosition}");
+    texts[paint.title] = paint;
+    _presentPosition += Vector2(componentDimension.x, 0);
+    _presentPosition += leftPadding;
+  }
+
+  addButton(ButtonComponent component,{double distance_x=  0,double distance_y=0}) {
+    _presentPosition += rightPadding;
+    component.position = presentPosition+Vector2(distance_x, distance_y);
     dv.log("adding button to ${presentPosition}");
     buttons.add(component);
 
-    _presentPosition += Vector2(componentDimension.x, 0);
+    _presentPosition += Vector2(component.size.x,0);
     _presentPosition += leftPadding;
   }
 
@@ -73,6 +104,9 @@ class Rows {
   render(Canvas c) {
     for (var text in texts.values) {
       text.paint.render(c, text.message, text.position);
+    }
+    for (var b in buttons) {
+      b.render(c);
     }
   }
 }

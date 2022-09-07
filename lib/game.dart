@@ -2,7 +2,8 @@ import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import "package:flame/game.dart";
 import 'package:game2048/debug_conf.dart';
-import 'package:game2048/game_board.dart';
+import "yes_no_menu.dart"; 
+import 'package:game2048/game_platform_config.dart';
 
 // import "package:flame/game.dart";
 import 'package:flame/input.dart';
@@ -15,6 +16,7 @@ import 'package:flame/input.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:path/path.dart';
 import 'dart:developer' as dv;
 import "tile_board.dart";
 import "tile.dart";
@@ -37,8 +39,8 @@ class MyGame extends FlameGame
   //int twopower=1;
   TextPaint gameOverText = TextPaint(
       style: const TextStyle(fontStyle: FontStyle.normal, fontSize: 24));
-  SpriteComponent scoreImage = SpriteComponent();
-  SpriteComponent highestScoreImage = SpriteComponent();
+  late ButtonComponent score;
+  late ButtonComponent scoreBest;
   TextPaint scoreText = TextPaint(style: const TextStyle(fontSize: 24));
   TextPaint highestScoreText = TextPaint(style: const TextStyle(fontSize: 24));
   late ButtonComponent undoButton;
@@ -50,44 +52,30 @@ class MyGame extends FlameGame
   MatrixFormat matrix;
   late Vector2 scale;
   Rows? userMenu;
-  MyGame({required this.size, required this.matrix}) : super() {
+  BuildContext context;
+  MyGame({required this.context ,required this.size, required this.matrix}) : super() {
     var matrixOut = Constants.MatrixConstants[matrix]!.matrix;
     matrixCol = matrixOut.x.toInt();
     matrixRow = matrixOut.y.toInt();
     scale = Constants.MatrixConstants[matrix]!.scale;
 
-    dv.log("selected platform ${defaultTargetPlatform}");
+    
     var scale2 = Constants.constants[defaultTargetPlatform]!.scale;
     scale = Vector2(scale.x * scale2.x, scale.y * scale2.y);
-
-    dv.log("selected platform ${TargetPlatform.android}");
+dv.log("selected platform ${defaultTargetPlatform},${scale}");
+   // dv.log("selected platform ${TargetPlatform.android}");
   }
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-    await Tile.loadImage();
+    await Tile.loadImage(); 
+     await initMenu();
     // MyComponents = List.generate(16, (i) {
     super.onLoad();
     //place the background
     //
 
-    var homeButtonSprite = await Sprite.load('new_game.png',
-        srcPosition: Vector2(0, 0), srcSize: Vector2(128, 128));
-    homeButton = ButtonComponent(
-        button: SpriteComponent(
-      sprite: homeButtonSprite,
-      size: Vector2(128 * scale.x, 128 * scale.y),
-    ));
-
-    var buttonNewSprite = await Sprite.load('new_game.png',
-        srcPosition: Vector2(0, 0), srcSize: Vector2(128, 128));
-
-    undoButton = ButtonComponent(
-        button: SpriteComponent(
-      sprite: buttonNewSprite,
-      size: Vector2(128 * scale.x, 128 * scale.y),
-    ));
-    await initMenu();
+  
     dv.log("loading background matrix: $matrixCol x $matrixRow");
 
     var background = await Sprite.load('p_background.png',
@@ -98,7 +86,7 @@ class MyGame extends FlameGame
 
     add(backsprite!);
 
-    backsprite!.position = userMenu!.presentPosition;
+    backsprite!.position = userMenu!.presentPosition ;
     tileArray = List.generate(matrixRow, (index) => TileLine());
     //backsprite!.position += position;
     Tile bg;
@@ -109,7 +97,7 @@ class MyGame extends FlameGame
       pos = Vector2(pos.x * scale.x, pos.y * scale.y);
       bg = Tile(this, 0, pos, scale, Vector2(col.toDouble(), row.toDouble()));
 
-      bg.position = userMenu!.presentPosition + pos; // + position;
+      bg.position =  backsprite!.position  + pos; // + position;
       pos = bg.position;
 
       // int col = i % 4;b
@@ -125,38 +113,102 @@ class MyGame extends FlameGame
     for (var element in tileArray!) {
       element.applyChanges();
     }
-    add(scoreImage);
-    add(highestScoreImage);
-    add(undoButton);
-    add(homeButton);
+    // score.position=Vector2(100*scale.x,64*scale.y);
+    // scoreBest.position=Vector2(228*scale.x,64*scale.y);
+    // homeButton.position=Vector2(100*scale.x,128*scale.y);
+    // undoButton.position=Vector2(228*scale.x,128*scale.y);
+    for(var element in userMenu!.buttons){
+      add(element);
+    }
+    
   }
-
+  clearTiles(){
+    for(var tl in tileArray!){
+      for (var t in tl.oldList!){
+        t.tileIndex=0;
+      }
+    }
+    TileLine.placeNewTiles2(tileArray!);
+    for (var element in tileArray!) {
+      element.applyChanges();
+    }
+  }
   initMenu() async {
-    var scaleVector = Vector2(128 * scale.x, 128 * scale.y);
-    userMenu = Rows(size / 16,
-        topPadding: Vector2(0, scaleVector.y / 8),
-        bottomPadding: Vector2(0, scaleVector.y / 8),
-        rightPadding: Vector2(scaleVector.x / 4, 0),
-        leftPadding: Vector2(scaleVector.x / 4, 0),
+    var scaleVector = Vector2(64 * scale.x, 64 * scale.y);
+    userMenu = Rows(size / 32,
+        topPadding: Vector2(0, scaleVector.y / 32),
+        bottomPadding: Vector2(0, scaleVector.y / 32),
+        rightPadding: Vector2(scaleVector.x /32, 0),
+        leftPadding: Vector2(scaleVector.x / 32, 0),
         componentDimension: scaleVector);
+    var mainSprite=await Sprite.load("game_menu.png");
+    var homeButtonSprite =  Sprite(mainSprite.image,srcPosition:Vector2(0,0),srcSize:Vector2(128,128));
+    homeButton = ButtonComponent(
+      onPressed: ()async {
+         await Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ShowYesNo.show("game on progress quit?",context, () {
+        Navigator.pop(this.context);
+                    },(){ })));
+      },
+        button: SpriteComponent(
+      sprite: homeButtonSprite,
+      size: Vector2(64 * scale.x, 64 * scale.y),
+    ));
 
-    scoreImage.sprite = await Sprite.load('new_game.png',
-        srcPosition: Vector2(0, 0), srcSize: Vector2(128, 128));
+    var buttonNewSprite = Sprite(mainSprite.image,srcPosition:Vector2(128,0),srcSize:Vector2(128,128));
 
-    highestScoreImage.sprite = await Sprite.load('new_button.png',
-        srcPosition: Vector2(0, 0), srcSize: Vector2(128, 128));
+    undoButton = ButtonComponent(
+       onPressed: ()async {
+         await Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ShowYesNo.show("game on progress restart?",context, () {
+        clearTiles();
+                    },(){ })));
+      },
+        button: SpriteComponent(
+      sprite: buttonNewSprite,
+      size: Vector2(64 * scale.x, 64 * scale.y),
+    ));
 
+    var spriteScore =  Sprite(mainSprite.image,srcPosition:Vector2(0,128),srcSize:Vector2(256,128));
+
+
+    var spriteBest = Sprite(mainSprite.image,srcPosition:Vector2(0,256),srcSize:Vector2(256,128));  
+    score = ButtonComponent(
+        button: SpriteComponent(
+      sprite: spriteScore,
+      size: Vector2( 128* scale.x, 64 * scale.y),
+    ));
+    scoreBest = ButtonComponent(
+        button: SpriteComponent(
+      sprite: spriteBest,
+      size: Vector2(128 * scale.x, 64 * scale.y),
+    ));
     //firstrow
-    userMenu!.addComponent(scoreImage);
-    userMenu!.addComponent(highestScoreImage);
+    // userMenu!.addComponent(scoreImage);
+    // userMenu!.addComponent(highestScoreImage);
+    // userMenu!.newRow();
+    userMenu!.addButton(score);
+    userMenu!.addButton(scoreBest);
     userMenu!.newRow();
-    userMenu!
-        .addText(GameText(title: "scoreText", message: "0", paint: scoreText));
-    userMenu!.addText(GameText(
-        title: "highestScoreText", message: "0", paint: highestScoreText));
-    userMenu!.newRow();
+    userMenu!.addTextOn(
+      GameText(title: "scoreText", message: "0", paint: scoreText),
+      score,
+      Vector2(0,24*scale.x),Vector2(80*scale.x,0)
+    );
+    userMenu!.addTextOn(
+      GameText(
+          title: "highestScoreText", message: "0", paint: highestScoreText),
+          scoreBest,
+      Vector2(0,24*scale.x),Vector2(80*scale.x,0)
+    );
+
+   // userMenu!.newRow();
     userMenu!.addButton(undoButton);
-    userMenu!.addButton(homeButton);
+    userMenu!.addButton(homeButton,distance_x: 64*scale.x);
     userMenu!.newRow();
   }
 

@@ -11,9 +11,9 @@ class Constants {
     MatrixFormat.map4x4:
         Dimensions(matrix: Vector2(4, 4), scale: Vector2(0.5, 0.5)),
     MatrixFormat.map5x5:
-        Dimensions(matrix: Vector2(5, 5), scale: Vector2(0.5, 0.5)),
+        Dimensions(matrix: Vector2(5, 5), scale: Vector2(0.375, 0.375)),
     MatrixFormat.map6x6:
-        Dimensions(matrix: Vector2(6, 6), scale: Vector2(0.5, 0.5)),
+        Dimensions(matrix: Vector2(6, 6), scale: Vector2(0.35, 0.35)),
   };
 }
 
@@ -26,7 +26,7 @@ class Constant {
     start = Vector2(50, 20);
   }
   Constant.Windows() {
-    scale = Vector2(0.75, 0.75);
+    scale = Vector2(2,2);
     start = Vector2(50, 20);
   }
 }

@@ -113,7 +113,7 @@ class TileLine {
     }
 
     int i = 0;
-    while (i < 2) {
+    while (i < 1) {
       int rndTileIndex = 3 * rnd.nextInt(100) +
           rnd.nextInt(100) +
           rnd.nextInt(100); //create random for placing index
