@@ -3,5 +3,6 @@
 classic game 2048
 
 ## Propose
-writen in flutter  , part of game buddle of 4-6 games.
+writen in flutter  
+high score system ready but not used yet.
 
